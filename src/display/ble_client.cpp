@@ -11,6 +11,7 @@ static BLEAdvertisedDevice *myDevice;
 static bool deviceConnected = false;
 static BLEClient *pClient = nullptr;
 static void (*sensorDataCallback)(const String &) = nullptr;
+static void (*triggerDataCallback)(const String &) = nullptr;
 bool doConnect = false;
 
 class ClientCallbacks : public BLEClientCallbacks {
@@ -34,8 +35,15 @@ class ClientCallbacks : public BLEClientCallbacks {
 void notifyCallback(BLERemoteCharacteristic *pChar, uint8_t *pData,
                     size_t length, bool isNotify) {
   String data = String((char *)pData, length);
-  if (sensorDataCallback) {
-    sensorDataCallback(data);
+  
+  if (pChar->getUUID().equals(triggerCharUUID)) {
+    if (triggerDataCallback) {
+      triggerDataCallback(data);
+    }
+  } else if (pChar->getUUID().equals(sensorCharUUID)) {
+    if (sensorDataCallback) {
+      sensorDataCallback(data);
+    }
   }
 }
 
@@ -140,6 +148,11 @@ bool connectToServer() {
     pSensorCharacteristic->subscribe(true, notifyCallback);
   }
 
+  if (pTriggerCharacteristic->canNotify()) {
+    Serial.println("注册触发器通知回调...");
+    pTriggerCharacteristic->subscribe(true, notifyCallback);
+  }
+
   EPD::displayCollectorStatus(1);
 
   return true;
@@ -170,6 +183,10 @@ void sendTrigger(const String &data) {
 
 void onSensorData(void (*callback)(const String &)) {
   sensorDataCallback = callback;
+}
+
+void onTriggerData(void (*callback)(const String &)) {
+  triggerDataCallback = callback;
 }
 
 } // namespace BLEC

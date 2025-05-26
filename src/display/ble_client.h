@@ -14,6 +14,7 @@ void setup();
 bool isConnected();
 void sendTrigger(const String &data);
 void onSensorData(void (*callback)(const String &));
+void onTriggerData(void (*callback)(const String &));
 
 // 内部函数声明
 bool connectToServer();

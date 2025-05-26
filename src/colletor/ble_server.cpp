@@ -82,7 +82,7 @@ void setup() {
   pSensorCharacteristic->setCallbacks(&sensorCallbacks);
 
   pTriggerCharacteristic = pService->createCharacteristic(
-      TRIGGER_CHAR_UUID, NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::WRITE);
+      TRIGGER_CHAR_UUID, NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::NOTIFY);
   pTriggerCharacteristic->setCallbacks(&sensorCallbacks);
 
   pService->start();
@@ -102,6 +102,15 @@ void sendSensorData(const String &data) {
   if (deviceConnected) {
     pSensorCharacteristic->setValue(data.c_str());
     pSensorCharacteristic->notify();
+    Serial.println("发送传感器数据: " + data);
+  }
+}
+
+void sendTriggerData(const String &data) {
+  if (deviceConnected) {
+    pTriggerCharacteristic->setValue(data.c_str());
+    pTriggerCharacteristic->notify();
+    Serial.println("发送触发器数据: " + data);
   }
 }
 

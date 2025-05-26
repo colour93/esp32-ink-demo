@@ -18,6 +18,7 @@ extern bool deviceConnected;
 
 void setup();
 void sendSensorData(const String &data);
+void sendTriggerData(const String &data);
 bool isConnected();
 
 } // namespace BLES

@@ -44,9 +44,6 @@ void setup() {
 
   // 显示
   display.display();
-
-  Serial.println("position 参数: STATUS_BAR_WIDTH " + String(STATUS_BAR_WIDTH) +
-                 ", CORE_DISPLAY_WIDTH " + String(CORE_DISPLAY_WIDTH));
 }
 
 void clearScreen() {

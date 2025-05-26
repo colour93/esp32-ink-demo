@@ -19,11 +19,19 @@ void setup() {
   Connect::setup();
 
   // 初始化 BLE 客户端
-  BLEC::setup();
   BLEC::onSensorData([](const String &data) {
     Serial.println("收到传感器数据: " + data);
     // 这里可以处理接收到的数据
   });
+
+  // 添加触发器数据的回调
+  BLEC::onTriggerData([](const String &data) {
+    Serial.println("收到触发器数据: " + data);
+    // 这里可以处理触发器数据
+    Pages::switchToNextPage();
+  });
+
+  BLEC::setup();
 
   // 初始化结束
   Serial.println("初始化结束");
