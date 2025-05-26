@@ -3,11 +3,14 @@
 
 #include "../epd.h"
 
+#include <ArduinoJson.h>
+#include <HTTPClient.h>
+
 namespace Pages {
 
 class HitokotoPage {
 public:
-    static void display();
+  static void display();
 };
 
 } // namespace Pages

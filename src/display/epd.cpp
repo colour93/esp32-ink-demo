@@ -33,12 +33,10 @@ void setup() {
   // 欢迎
   u8g2.setCursor(COMPONENT_TITLE_X, COMPONENT_TITLE_Y);
   u8g2.setFont(u8g2_font_helvB24_tr);
-  u8g2.print("Hello World");
+  u8g2.print("Starting...");
   u8g2.setCursor(COMPONENT_SUBTITLE_X, COMPONENT_SUBTITLE_Y);
-  // u8g2.setFont(u8g2_font_helvR24_tr);
-  // u8g2.print("Starting...");
   u8g2.setFont(u8g2_font_wqy16_t_gb2312);
-  u8g2.print("启启启启启动中");
+  u8g2.print("启启启启启动中...");
 
   displayStatus(0);
 
@@ -54,9 +52,6 @@ void clearScreen() {
 void clearCoreArea() {
   display.fillRect(CORE_DISPLAY_X, CORE_DISPLAY_Y, CORE_DISPLAY_WIDTH,
                    CORE_DISPLAY_HEIGHT, GxEPD_WHITE);
-  Serial.println("clearCoreArea: x: " + String(CORE_DISPLAY_X) + ", y: " +
-                 String(CORE_DISPLAY_Y) + ", w: " + String(CORE_DISPLAY_WIDTH) +
-                 ", h: " + String(CORE_DISPLAY_HEIGHT));
   display.display(1);
 }
 

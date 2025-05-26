@@ -31,6 +31,7 @@ float getPPM() {
 
 void setup(uint8_t pin) {
   PIN = pin;
+  pinMode(PIN, INPUT);
   // 设置ADC分辨率为12位(0-4095)
   analogReadResolution(12);
 }

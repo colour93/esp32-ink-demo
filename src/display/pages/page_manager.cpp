@@ -31,9 +31,9 @@ void updateCurrentPage() {
   case WELCOME:
     WelcomePage::display();
     break;
-  // case DATA_DISPLAY:
-  //     DataPage::display();
-  //     break;
+  case DATA:
+    DataPage::display(1);
+    break;
   // case ANIMATION:
   //     AnimationPage::display();
   //     break;

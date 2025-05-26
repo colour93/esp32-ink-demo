@@ -98,11 +98,15 @@ void setup() {
                  String(NimBLEDevice::getAddress().toString().c_str()));
 }
 
-void sendSensorData(const String &data) {
+void sendSensorData(float temperature, float humidity, float ppm) {
   if (deviceConnected) {
-    pSensorCharacteristic->setValue(data.c_str());
+    float values[3] = {temperature, humidity, ppm};
+
+    pSensorCharacteristic->setValue((uint8_t *)values, sizeof(values));
     pSensorCharacteristic->notify();
-    Serial.println("发送传感器数据: " + data);
+
+    Serial.printf("发送传感器数据: 温度=%.2f, 湿度=%.2f, PPM=%.2f\n",
+                  temperature, humidity, ppm);
   }
 }
 

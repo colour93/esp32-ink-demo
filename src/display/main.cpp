@@ -1,9 +1,14 @@
 #include "ble_client.h"
 #include "connect.h"
 #include "epd.h"
+#include "mqtt.h"
+#include "pages/data_page.h"
 #include "pages/page_manager.h"
+#include "store.h"
 
 #ifdef DEVICE_DISPLAY
+
+unsigned long lastReportTime = 0;
 
 void setup() {
   Serial.begin(115200);
@@ -18,17 +23,40 @@ void setup() {
   // 初始化并连接 WiFi
   Connect::setup();
 
+  // 初始化 MQTT
+  MQTT::setup();
+
   // 初始化 BLE 客户端
   BLEC::onSensorData([](const String &data) {
-    Serial.println("收到传感器数据: " + data);
-    // 这里可以处理接收到的数据
+    // 解析传感器数据
+    float temperature, humidity, ppm;
+    if (data.length() >= sizeof(float) * 3) {
+      memcpy(&temperature, data.c_str(), sizeof(float));
+      memcpy(&humidity, data.c_str() + sizeof(float), sizeof(float));
+      memcpy(&ppm, data.c_str() + sizeof(float) * 2, sizeof(float));
+
+      // 缓存数据
+      Store::temperature = temperature;
+      Store::humidity = humidity;
+      Store::ppm = ppm;
+
+      Serial.printf("解析后的数据: 温度=%.2f, 湿度=%.2f, PPM=%.2f\n",
+                    temperature, humidity, ppm);
+
+      // 距离上次上报大于 30 秒
+      if (millis() - lastReportTime > 30000) {
+        MQTT::publishSensorData();
+        lastReportTime = millis();
+      }
+    }
   });
 
   // 添加触发器数据的回调
   BLEC::onTriggerData([](const String &data) {
-    Serial.println("收到触发器数据: " + data);
-    // 这里可以处理触发器数据
-    Pages::switchToNextPage();
+    // 处理触发器数据
+    if (data == "BUTTON_PRESSED") {
+      Pages::switchToNextPage();
+    }
   });
 
   BLEC::setup();
@@ -38,6 +66,8 @@ void setup() {
 }
 
 void loop() {
+
+  delay(1);
 
   const unsigned long currentTime = millis();
 
@@ -58,6 +88,14 @@ void loop() {
   if (currentTime % 10000 == 0) {
     if (!BLEC::isConnected()) {
       NimBLEDevice::getScan()->start(5000, false, true);
+    }
+  }
+
+  // 每 3000ms 执行一次
+  if (currentTime % 3000 == 0) {
+    // 更新显示
+    if (Pages::currentPage == Pages::PageType::DATA) {
+      Pages::DataPage::display();
     }
   }
 }

@@ -3,7 +3,7 @@
 
 #include "../epd.h"
 
-// #include "data_page.h"
+#include "data_page.h"
 #include "welcome_page.h"
 // #include "animation_page.h"
 #include "hitokoto_page.h"
@@ -12,7 +12,7 @@ namespace Pages {
 
 enum PageType {
   WELCOME = 0,
-  // DATA_DISPLAY,
+  DATA,
   // ANIMATION,
   HITOKOTO,
   PAGE_COUNT // 用于计算总页数

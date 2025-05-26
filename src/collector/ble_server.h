@@ -17,7 +17,7 @@ extern NimBLECharacteristic* pTriggerCharacteristic;
 extern bool deviceConnected;
 
 void setup();
-void sendSensorData(const String &data);
+void sendSensorData(float temperature, float humidity, float ppm);
 void sendTriggerData(const String &data);
 bool isConnected();
 
