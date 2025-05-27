@@ -7,10 +7,11 @@
 #include <GxEPD2_BW.h>
 #include <U8g2_for_Adafruit_GFX.h>
 
+#include "ble_client.h"
+#include "connect.h"
 #include "icons.h"
 #include "position.h"
-#include "connect.h"
-#include "ble_client.h"
+
 
 #define GxEPD2_DISPLAY_CLASS GxEPD2_BW
 #define GxEPD2_DRIVER_CLASS GxEPD2_213_B74
@@ -36,8 +37,8 @@ void displayCollectorStatus(const bool autoDisplay);
 
 void setup();
 
-void clearScreen();
-void clearCoreArea();
+void clearScreen(const bool autoDisplay);
+void clearCoreArea(const bool autoDisplay);
 
 } // namespace EPD
 

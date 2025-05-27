@@ -5,7 +5,7 @@
 #include "pages/data_page.h"
 #include "pages/page_manager.h"
 #include "store.h"
-
+#include "time_manager.h"
 #ifdef DEVICE_DISPLAY
 
 unsigned long lastReportTime = 0;
@@ -22,6 +22,11 @@ void setup() {
 
   // 初始化并连接 WiFi
   Connect::setup();
+
+  // 初始化时间
+  if (Connect::isConnected()) {
+    TimeManager::setup();
+  }
 
   // 初始化 MQTT
   MQTT::setup();
@@ -89,6 +94,9 @@ void loop() {
     if (!BLEC::isConnected()) {
       NimBLEDevice::getScan()->start(5000, false, true);
     }
+    if (!TimeManager::isTimeValid() && Connect::isConnected()) {
+      TimeManager::setup();
+    }
   }
 
   // 每 3000ms 执行一次
@@ -96,6 +104,9 @@ void loop() {
     // 更新显示
     if (Pages::currentPage == Pages::PageType::DATA) {
       Pages::DataPage::display();
+    }
+    if (Pages::currentPage == Pages::PageType::WELCOME) {
+      Pages::WelcomePage::display();
     }
   }
 }

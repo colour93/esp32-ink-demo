@@ -3,7 +3,7 @@
 #include "ble_server.h"
 #include "dht11.h"
 #include "mq135.h"
-
+#include "oled.h"
 #define DHT11_PIN 22
 #define MQ135_A0 34
 #define BUTTON_PIN 23
@@ -24,6 +24,8 @@ void IRAM_ATTR buttonISR() {
 void setup() {
   Serial.begin(115200);
   Serial.println("初始化采集器");
+
+  OLED::setup();
 
   // 初始化按钮
   pinMode(BUTTON_PIN, INPUT_PULLUP);
@@ -61,6 +63,8 @@ void loop() {
     BLES::sendSensorData(DHTSensor::getTemperature(), DHTSensor::getHumidity(),
                          MQ135::getPPM());
   }
+
+  OLED::displayAnimation();
 }
 
 #endif

@@ -44,15 +44,17 @@ void setup() {
   display.display();
 }
 
-void clearScreen() {
+void clearScreen(const bool autoDisplay) {
   display.fillScreen(GxEPD_WHITE);
-  display.display();
+  if (autoDisplay)
+    display.display(1);
 }
 
-void clearCoreArea() {
+void clearCoreArea(const bool autoDisplay) {
   display.fillRect(CORE_DISPLAY_X, CORE_DISPLAY_Y, CORE_DISPLAY_WIDTH,
                    CORE_DISPLAY_HEIGHT, GxEPD_WHITE);
-  display.display(1);
+  if (autoDisplay)
+    display.display(1);
 }
 
 void displayStatus(const bool autoDisplay) {
