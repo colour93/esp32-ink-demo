@@ -4,10 +4,10 @@
 #include "dht11.h"
 #include "mq135.h"
 #include "oled.h"
-#define DHT11_PIN 22
+#define DHT11_PIN 32
 #define MQ135_A0 34
-#define BUTTON_PIN 23
-#define DEBOUNCE_TIME 50
+#define BUTTON_PIN 5
+#define DEBOUNCE_TIME 200
 
 volatile bool buttonPressed = false;
 volatile unsigned long lastDebounceTime = 0;
