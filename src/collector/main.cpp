@@ -3,10 +3,18 @@
 #include "ble_server.h"
 #include "dht11.h"
 #include "mq135.h"
+#include "bmp180.h"
 #include "oled.h"
+
+// 传感器引脚定义
 #define DHT11_PIN 32
 #define MQ135_A0 34
 #define BUTTON_PIN 5
+
+// BMP180 软 I2C 引脚定义
+#define BMP180_SDA 14
+#define BMP180_SCL 27
+
 #define DEBOUNCE_TIME 200
 
 volatile bool buttonPressed = false;
@@ -40,13 +48,20 @@ void setup() {
   // 初始化 DHT11
   DHTSensor::setup(DHT11_PIN);
 
+  // 初始化 BMP180 软 I2C
+  BMP180::setupSoftI2C(BMP180_SDA, BMP180_SCL);
+  BMP180::setup();
+
   // 初始化结束
   Serial.println("初始化结束");
 
-  // 获取 MQ135
+  // 获取传感器数据
   Serial.println("MQ135: " + String(MQ135::getPPM()));
   Serial.println("DHT11: " + String(DHTSensor::getTemperature()) + "C, " +
                  String(DHTSensor::getHumidity()) + "%");
+  Serial.println("BMP180: " + String(BMP180::getTemperature()) + "C, " +
+                 String(BMP180::getPressure()) + "hPa, " +
+                 String(BMP180::getAltitude()) + "m");
 }
 
 void loop() {
@@ -57,11 +72,13 @@ void loop() {
     buttonPressed = false;
   }
 
-  // 每 1000ms 获取一次 MQ135 和 DHT11 数据，notify
+  // 每 1000ms 获取一次传感器数据，notify
   if (millis() - lastDataTime >= 1000) {
     lastDataTime = millis();
+    float pressure = BMP180::getPressure();
+    float altitude = BMP180::getAltitude();
     BLES::sendSensorData(DHTSensor::getTemperature(), DHTSensor::getHumidity(),
-                         MQ135::getPPM());
+                        MQ135::getPPM(), pressure, altitude);
   }
 
   OLED::displayAnimation();

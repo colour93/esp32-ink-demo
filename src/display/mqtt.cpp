@@ -66,6 +66,8 @@ void publishSensorData() {
       doc["temperature"] = Store::temperature;
       doc["humidity"] = Store::humidity;
       doc["co2"] = Store::ppm;
+      doc["pressure"] = Store::pressure;
+      doc["altitude"] = Store::altitude;
 
       char jsonBuffer[200];
       serializeJson(doc, jsonBuffer);

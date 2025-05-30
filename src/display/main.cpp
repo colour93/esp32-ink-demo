@@ -34,19 +34,23 @@ void setup() {
   // 初始化 BLE 客户端
   BLEC::onSensorData([](const String &data) {
     // 解析传感器数据
-    float temperature, humidity, ppm;
-    if (data.length() >= sizeof(float) * 3) {
+    float temperature, humidity, ppm, pressure, altitude;
+    if (data.length() >= sizeof(float) * 5) {
       memcpy(&temperature, data.c_str(), sizeof(float));
       memcpy(&humidity, data.c_str() + sizeof(float), sizeof(float));
       memcpy(&ppm, data.c_str() + sizeof(float) * 2, sizeof(float));
+      memcpy(&pressure, data.c_str() + sizeof(float) * 3, sizeof(float));
+      memcpy(&altitude, data.c_str() + sizeof(float) * 4, sizeof(float));
 
       // 缓存数据
       Store::temperature = temperature;
       Store::humidity = humidity;
       Store::ppm = ppm;
+      Store::pressure = pressure;
+      Store::altitude = altitude;
 
-      Serial.printf("解析后的数据: 温度=%.2f, 湿度=%.2f, PPM=%.2f\n",
-                    temperature, humidity, ppm);
+      Serial.printf("解析后的数据: 温度=%.2f, 湿度=%.2f, PPM=%.2f, 气压=%.2f, 海拔=%.2f\n",
+                    temperature, humidity, ppm, pressure, altitude);
 
       // 距离上次上报大于 30 秒
       if (millis() - lastReportTime > 30000) {
