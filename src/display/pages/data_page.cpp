@@ -92,7 +92,7 @@ namespace Pages
       EPD::display.fillRect(DATA_PAGE_ALTITUDE_X, y - 16, DATA_PAGE_COMPONENT_WIDTH,
                             20, GxEPD_WHITE);
       EPD::u8g2.setCursor(DATA_PAGE_ALTITUDE_X, y);
-      EPD::u8g2.print(String(Store::altitude));
+      EPD::u8g2.print(String(Store::altitude) + "m");
       lastAltitude = Store::altitude;
       needRefresh = true;
     }
@@ -105,7 +105,7 @@ namespace Pages
       EPD::display.fillRect(DATA_PAGE_PRESSURE_X, y - 16, DATA_PAGE_COMPONENT_WIDTH,
                             20, GxEPD_WHITE);
       EPD::u8g2.setCursor(DATA_PAGE_PRESSURE_X, y);
-      EPD::u8g2.print(String(Store::pressure));
+      EPD::u8g2.print(String(Store::pressure) + "hPa");
       lastPressure = Store::pressure;
       needRefresh = true;
     }
