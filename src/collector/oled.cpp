@@ -69,8 +69,8 @@ void displaySensorData(float temperature, float humidity, float ppm,
   updateCircleAnimation();
   
   // 在右下角绘制圆形
-  uint8_t x = 100;     // 圆心x坐标
-  uint8_t y = 40;      // 圆心y坐标
+  uint8_t x = 110;     // 圆心x坐标
+  uint8_t y = 50;      // 圆心y坐标
   
   // 绘制实心圆
   display->drawDisc(x, y, currentRadius);
