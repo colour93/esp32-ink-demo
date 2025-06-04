@@ -1,9 +1,9 @@
 #ifdef DEVICE_COLLECTOR
 
 #include "ble_server.h"
+#include "bmp180.h"
 #include "dht11.h"
 #include "mq135.h"
-#include "bmp180.h"
 #include "oled.h"
 
 // 传感器引脚定义
@@ -20,6 +20,7 @@
 volatile bool buttonPressed = false;
 volatile unsigned long lastDebounceTime = 0;
 volatile unsigned long lastDataTime = 0;
+volatile unsigned long lastOLEDUpdateTime = 0;
 
 void IRAM_ATTR buttonISR() {
   unsigned long currentTime = millis();
@@ -28,6 +29,12 @@ void IRAM_ATTR buttonISR() {
     lastDebounceTime = currentTime;
   }
 }
+
+float temperature = 0;
+float humidity = 0;
+float ppm = 0;
+float pressure = 0;
+float altitude = 0;
 
 void setup() {
   Serial.begin(115200);
@@ -75,13 +82,24 @@ void loop() {
   // 每 1000ms 获取一次传感器数据，notify
   if (millis() - lastDataTime >= 1000) {
     lastDataTime = millis();
-    float pressure = BMP180::getPressure();
-    float altitude = BMP180::getAltitude();
-    BLES::sendSensorData(DHTSensor::getTemperature(), DHTSensor::getHumidity(),
-                        MQ135::getPPM(), pressure, altitude);
+
+    // 发送数据到BLE
+    BLES::sendSensorData(temperature, humidity, ppm, pressure, altitude);
   }
 
-  OLED::displayAnimation();
+  // 每 50ms 更新一次 OLED 显示
+  if (millis() - lastOLEDUpdateTime >= 10) {
+    lastOLEDUpdateTime = millis();
+
+    // 获取所有传感器数据
+    temperature = DHTSensor::getTemperature();
+    humidity = DHTSensor::getHumidity();
+    ppm = MQ135::getPPM();
+    pressure = BMP180::getPressure();
+    altitude = BMP180::getAltitude();
+    OLED::displaySensorData(temperature, humidity, ppm, pressure, altitude,
+                            buttonPressed, BLES::isConnected());
+  }
 }
 
 #endif
