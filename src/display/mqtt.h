@@ -12,9 +12,7 @@ namespace MQTT {
 extern PubSubClient client;
 
 void setup();
-void mqttReconnectTask(void *parameter);
 void publishSensorData();
-void loop();
 
 } // namespace MQTT
 
